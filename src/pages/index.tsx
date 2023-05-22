@@ -20,24 +20,56 @@ const Home: NextPage = () => {
   });
 
   useEffect(() => {    
-    async function data() {
-      await client.trace.create({
-        name: "string",
-        attributes: {'name': 'Max'} ,
-        status: "success"
-      })
+    const trace = async () => {
+      try {
+        const traceRes = await client.trace.create({
+          name: "string",
+          attributes: {'name': 'Max'},
+          status: "success"
+        });
+
+        console.log(traceRes);
+
+        const eventRes = await client.event.create({
+          traceId: traceRes.id,
+          name: "string",
+          startTime: new Date(),
+          attributes: {'name': 'Max'}
+        });
+
+        console.log(eventRes);
+
+        const spanRes = await client.span.create({
+          traceId: eventRes.traceId,
+          name: "string",
+          startTime: new Date(),
+          attributes: {'name': 'Max'}
+        });
+
+        console.log(spanRes);
+
+        const updateSpanRes = await client.span.update({
+          spanId: spanRes.id,
+          endTime: new Date(),
+        });
+
+        console.log(updateSpanRes);
+
+        const metricRes = await client.metric.create({
+          traceId: eventRes.traceId,
+          name: "string",
+          value: 1
+        });
+
+        console.log(metricRes);
+      } catch (err) {
+        console.log(err);
+      }
     }
 
-    
-    data()
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-
-  }, [client.trace]);
+    trace().then(() => console.log('done')).catch(err => console.log(err));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   
 
