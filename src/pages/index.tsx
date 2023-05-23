@@ -40,7 +40,7 @@ const Home: NextPage = () => {
         console.log(eventRes);
 
         const spanRes = await client.span.create({
-          traceId: eventRes.traceId,
+          traceId: traceRes.id,
           name: "string",
           startTime: new Date(),
           attributes: {'name': 'Max'}
@@ -56,7 +56,7 @@ const Home: NextPage = () => {
         console.log(updateSpanRes);
 
         const metricRes = await client.score.create({
-          traceId: eventRes.traceId,
+          traceId: traceRes.id,
           name: "string",
           value: 1
         });
