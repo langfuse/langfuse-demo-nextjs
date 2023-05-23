@@ -4,7 +4,7 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 
-import { FintoLangfuseClient, FintoLangfuseEnvironment} from '@finto-fern/api-client'
+import { LangfuseClient, LangfuseEnvironment} from '@finto-fern/api-client'
 
 
 import { api } from "~/utils/api";
@@ -14,9 +14,9 @@ const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
 
 
-  const client = new FintoLangfuseClient({
+  const client = new LangfuseClient({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    environment: FintoLangfuseEnvironment.Local, 
+    environment: LangfuseEnvironment.Local, 
   });
 
   useEffect(() => {    
@@ -25,7 +25,7 @@ const Home: NextPage = () => {
         const traceRes = await client.trace.create({
           name: "string",
           attributes: {'name': 'Max'},
-          status: "success"
+          status: "executing"
         });
 
         console.log(traceRes);
@@ -55,13 +55,39 @@ const Home: NextPage = () => {
 
         console.log(updateSpanRes);
 
-        const metricRes = await client.score.create({
+        const scoreRes = await client.score.create({
           traceId: eventRes.traceId,
           name: "string",
           value: 1
         });
 
-        console.log(metricRes);
+        console.log(scoreRes);
+
+        const traceRes2 = await client.trace.update({
+          id: traceRes.id,
+          status: "success"
+        })
+
+        await client.span.createLlmCall({
+          traceId: traceRes.id,
+          name: "string",
+          startTime: new Date(),
+          attributes: {
+            tokens: {
+              promptAmount: 1,
+              completionAmount: 100,
+            },
+            prompt: "This is a great prompt",
+            completion: "This is a better completion",
+            model: {
+              name: "gpt2",
+              version: "2.0",
+              provider: "openai",
+            }
+          },
+        })
+
+        console.log(traceRes2);
       } catch (err) {
         console.log(err);
       }
