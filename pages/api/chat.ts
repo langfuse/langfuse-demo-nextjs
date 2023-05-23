@@ -8,21 +8,26 @@ import wasm from '../../node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm?module
 
 import tiktokenModel from '@dqbd/tiktoken/encoders/cl100k_base.json';
 import { Tiktoken, init } from '@dqbd/tiktoken/lite/init';
+import { LangfuseClient, LangfuseEnvironment } from '@finto-fern/api-client';
+import { NextApiRequest } from 'next';
 
-export const config = {
-  runtime: 'edge',
-};
 
-const handler = async (req: Request): Promise<Response> => {
+const handler = async (req: NextApiRequest): Promise<Response> => {
   try {
-    const { model, messages, key, prompt, temperature } = (await req.json()) as ChatBody;
+    
+    const { model, messages, key, prompt, temperature } = (req.body) as ChatBody;
+    
+    const client = new LangfuseClient({
+      environment: LangfuseEnvironment.Local
+    });
 
-    await init((imports) => WebAssembly.instantiate(wasm, imports));
-    const encoding = new Tiktoken(
-      tiktokenModel.bpe_ranks,
-      tiktokenModel.special_tokens,
-      tiktokenModel.pat_str,
-    );
+    // const trace = await client.trace.create({
+    //   name: 'chat-completion',
+    //   attributes: { env: LangfuseEnvironment.Local },
+    //   status: 'executing'
+    // })
+    
+    console.log("hello")
 
     let promptToSend = prompt;
     if (!promptToSend) {
@@ -34,25 +39,16 @@ const handler = async (req: Request): Promise<Response> => {
       temperatureToUse = DEFAULT_TEMPERATURE;
     }
 
-    const prompt_tokens = encoding.encode(promptToSend);
+    console.log(promptToSend)
 
-    let tokenCount = prompt_tokens.length;
-    let messagesToSend: Message[] = [];
+    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messages);
 
-    for (let i = messages.length - 1; i >= 0; i--) {
-      const message = messages[i];
-      const tokens = encoding.encode(message.content);
+    // await client.span.update({
+    //   spanId: llmSpan.id,
+    //   endTime: new Date(),
+    // })
 
-      if (tokenCount + tokens.length + 1000 > model.tokenLimit) {
-        break;
-      }
-      tokenCount += tokens.length;
-      messagesToSend = [message, ...messagesToSend];
-    }
-
-    encoding.free();
-
-    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend);
+    console.log("response")
 
     return new Response(stream);
   } catch (error) {
