@@ -55,13 +55,13 @@ const Home: NextPage = () => {
 
         console.log(updateSpanRes);
 
-        const metricRes = await client.score.create({
+        const scoreRes = await client.score.create({
           traceId: traceRes.id,
           name: "string",
           value: 1
         });
 
-        console.log(metricRes);
+        console.log(scoreRes);
       } catch (err) {
         console.log(err);
       }
