@@ -55,7 +55,7 @@ const Home: NextPage = () => {
 
         console.log(updateSpanRes);
 
-        const metricRes = await client.metric.create({
+        const metricRes = await client.score.create({
           traceId: eventRes.traceId,
           name: "string",
           value: 1
