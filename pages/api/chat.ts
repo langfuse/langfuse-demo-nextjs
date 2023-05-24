@@ -20,8 +20,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       attributes: { env: LangfuseEnvironment.Local },
       status: 'executing'
     })
-    
-    console.log("hello")
 
     let promptToSend = prompt;
     if (!promptToSend) {
@@ -32,8 +30,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (temperatureToUse == null) {
       temperatureToUse = DEFAULT_TEMPERATURE;
     }
-
-    console.log(promptToSend)
 
     const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messages);
 
@@ -49,51 +45,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         prompt: promptToSend,
       },
     })    
-   
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Transfer-Encoding', 'chunked');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
+    
     const reader = stream.getReader();
 
-    var completeResp = ''
+    let completeResp = '';
 
-    const read = async () => {
+    while (true) {
       const { done, value } = await reader.read();
-      if (done) {
+      if (done) break;
+      completeResp += new TextDecoder().decode(value);
+    }
 
-        await client.span.updateLlmCall({
-          spanId: span.id,
-          endTime: new Date(),
-          attributes: {
-            completion: completeResp,
-          },
-        });
+    await client.span.updateLlmCall({
+      spanId: span.id,
+      endTime: new Date(),
+      attributes: {
+        completion: completeResp,
+      },
+    });
 
-        await client.trace.update({
-          id: trace.id,
-          status: 'success'
-        })
+    await client.trace.update({
+      id: trace.id,
+      status: 'success'
+    })
 
-        res.end();
-        return;
-      }
-
-
-      completeResp = completeResp.concat(new TextDecoder().decode(value))
-      console.log('write', new TextDecoder().decode(value));
-      // Manually flush the data to the client by writing to the socket
-      if (res.socket) {
-        res.socket.write(value, () => {
-          // Continue reading the next chunk once the current chunk is flushed
-          read();
-        });
-      }
-    };
-
-    read();
-    res.status(200);
+    res.status(200).json(completeResp);
 
   } catch (error) {
     console.error(error);
