@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
     const client = new LangfuseClient({
-      environment: 'http://localhost:3000'
+      environment: 'http://localhost:3030'
     });
 
     const trace = await client.trace.create({
@@ -30,7 +30,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       temperatureToUse = DEFAULT_TEMPERATURE;
     }
 
-    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messages.map((message) => ({ role: message.role, content: message.content })));
+    const messagesToSend = messages.map((message) => {
+      return {
+        role: message.role,
+        content: message.content,
+      }
+    })
 
     const llmCall = await client.span.createLlmCall({
       traceId: trace.id,
@@ -41,9 +46,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           modelId: model.id,
           modelName: model.name,
         },
-        prompt: promptToSend,
+        prompt: JSON.stringify([
+          {
+            role: 'system',
+            content: promptToSend,
+          },
+          ...messagesToSend,
+        ],),
       },
-    })    
+    })
+
+    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messagesToSend);  
     
     const reader = stream.getReader();
 

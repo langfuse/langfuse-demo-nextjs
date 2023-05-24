@@ -36,7 +36,7 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
   const { t } = useTranslation('chat');
 
   const client = new LangfuseClient({
-    environment: 'http://localhost:3000'
+    environment: 'http://localhost:3030'
   });
 
   const {
