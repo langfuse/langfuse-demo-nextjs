@@ -4,11 +4,6 @@ import { OpenAIError, OpenAIStream } from '@/utils/server';
 import { ChatBody } from '@/types/chat';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { LangfuseClient, LangfuseEnvironment } from '@finto-fern/api-client';
-import { Stream } from 'stream';
-
-export const runtime = 'nodejs';
-// This is required to enable streaming
-export const dynamic = 'force-dynamic';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
