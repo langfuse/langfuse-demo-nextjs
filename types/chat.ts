@@ -3,6 +3,7 @@ import { OpenAIModel } from './openai';
 export interface Message {
   role: Role;
   content: string;
+  traceId: string
 }
 
 export type Role = 'assistant' | 'user';

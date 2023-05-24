@@ -22,6 +22,9 @@ import { MemoizedReactMarkdown } from '../Markdown/MemoizedReactMarkdown';
 import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import { IconThumbDown } from '@tabler/icons-react';
+import { IconThumbUp } from '@tabler/icons-react';
+import { LangfuseClient } from '@finto-fern/api-client';
 
 export interface Props {
   message: Message;
@@ -31,6 +34,10 @@ export interface Props {
 
 export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) => {
   const { t } = useTranslation('chat');
+
+  const client = new LangfuseClient({
+    environment: 'http://localhost:3000'
+  });
 
   const {
     state: { selectedConversation, conversations, currentMessage, messageIsStreaming },
@@ -123,6 +130,23 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [isEditing]);
+
+
+  function ratePositive() {
+    client.score.create({
+      traceId: message.traceId,
+      name: 'user-feedback',
+      value: 1
+    })
+  }
+
+  function rateNegative() {
+    client.score.create({
+      traceId: message.traceId,
+      name: 'user-feedback',
+      value: 0
+    })
+  }
 
   return (
     <div
@@ -267,19 +291,38 @@ export const ChatMessage: FC<Props> = memo(({ message, messageIndex, onEdit }) =
               </MemoizedReactMarkdown>
 
               <div className="md:-mr-8 ml-1 md:ml-0 flex flex-col md:flex-row gap-4 md:gap-1 items-center md:items-start justify-end md:justify-start">
-                {messagedCopied ? (
-                  <IconCheck
-                    size={20}
-                    className="text-green-500 dark:text-green-400"
-                  />
-                ) : (
-                  <button
-                    className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                    onClick={copyOnClick}
-                  >
-                    <IconCopy size={20} />
-                  </button>
-                )}
+                <div className="flex flex-col">
+                  <div className="flex-none">
+                    {messagedCopied ? (
+                      <IconCheck
+                        size={20}
+                        className="text-green-500 dark:text-green-400"
+                      />
+                    ) : (
+                      <button
+                      className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                        onClick={copyOnClick}
+                      >
+                        <IconCopy size={20} />
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex-none">
+                    <button
+                        className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                          onClick={ratePositive}
+                        >
+                          <IconThumbUp size={20} />
+                    </button>
+                  </div>
+                  <div className="flex-none">
+                    <button className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                          onClick={rateNegative}
+                        >
+                          <IconThumbDown size={20} />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}

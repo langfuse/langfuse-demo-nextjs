@@ -27,6 +27,7 @@ import HomeContext from '@/pages/api/home/home.context';
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import { v4 as uuid } from 'uuid';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -97,7 +98,7 @@ export const ChatInput = ({
       return;
     }
 
-    onSend({ role: 'user', content }, plugin);
+    onSend({ role: 'user', content, traceId: uuid() }, plugin);
     setContent('');
     setPlugin(null);
 

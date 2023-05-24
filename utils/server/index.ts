@@ -23,12 +23,17 @@ export class OpenAIError extends Error {
   }
 }
 
+export interface OpenAiMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export const OpenAIStream = async (
   model: OpenAIModel,
   systemPrompt: string,
   temperature : number,
   key: string,
-  messages: Message[],
+  messages: OpenAiMessage[],
 ) => {
   let url = `${OPENAI_API_HOST}/v1/chat/completions`;
   if (OPENAI_API_TYPE === 'azure') {

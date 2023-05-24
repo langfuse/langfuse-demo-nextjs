@@ -8,11 +8,10 @@ import { LangfuseClient, LangfuseEnvironment } from '@finto-fern/api-client';
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     
-    const { model, messages, key, prompt, temperature } = (req.body) as ChatBody;
-    
+    const { model, messages, key, prompt, temperature } = req.body as ChatBody;
+
     const client = new LangfuseClient({
       environment: 'http://localhost:3000'
-
     });
 
     const trace = await client.trace.create({
@@ -31,9 +30,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       temperatureToUse = DEFAULT_TEMPERATURE;
     }
 
-    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messages);
+    const stream = await OpenAIStream(model, promptToSend, temperatureToUse, key, messages.map((message) => ({ role: message.role, content: message.content })));
 
-    const span = await client.span.createLlmCall({
+    const llmCall = await client.span.createLlmCall({
       traceId: trace.id,
       startTime: new Date(),
       name: 'chat-completion',
@@ -57,7 +56,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     await client.span.updateLlmCall({
-      spanId: span.id,
+      spanId: llmCall.id,
       endTime: new Date(),
       attributes: {
         completion: completeResp,
@@ -69,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       status: 'success'
     })
 
-    res.status(200).json(completeResp);
+    res.status(200).json({response: completeResp, traceId: trace.id});
 
   } catch (error) {
     console.error(error);
