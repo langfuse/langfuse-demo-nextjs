@@ -12,15 +12,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
-    const client = new LangfuseClient({
-      environment: 'http://localhost:3030'
-    });
+    // const client = new LangfuseClient({
+    //   environment: 'http://localhost:3030'
+    // });
 
-    const trace = await client.trace.create({
-      name: 'chat-completion',
-      attributes: { env: 'http://localhost:3030' },
-      status: TraceStatus.Executing
-    })
+    // const trace = await client.trace.create({
+    //   name: 'chat-completion',
+    //   attributes: { env: 'http://localhost:3030' },
+    //   status: TraceStatus.Executing
+    // })
 
     let promptToSend = prompt;
     if (!promptToSend) {
@@ -39,24 +39,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       };
     });
 
-    const llmCall = await client.span.createLlmCall({
-      traceId: trace.id,
-      startTime: new Date(),
-      name: 'chat-completion',
-      attributes: {
-        model: {
-          modelId: model.id,
-          modelName: model.name,
-        },
-        prompt: JSON.stringify([
-          {
-            role: 'system',
-            content: promptToSend,
-          },
-          ...messagesToSend,
-        ],),
-      },
-    })
+    // const llmCall = await client.span.createLlmCall({
+    //   traceId: trace.id,
+    //   startTime: new Date(),
+    //   name: 'chat-completion',
+    //   attributes: {
+    //     model: {
+    //       modelId: model.id,
+    //       modelName: model.name,
+    //     },
+    //     prompt: JSON.stringify([
+    //       {
+    //         role: 'system',
+    //         content: promptToSend,
+    //       },
+    //       ...messagesToSend,
+    //     ],),
+    //   },
+    // })
 
     const stream = await OpenAIStream(
       model,
@@ -76,22 +76,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       completeResp += new TextDecoder().decode(value);
     }
 
-    await client.span.updateLlmCall({
-      spanId: llmCall.id,
-      endTime: new Date(),
-      attributes: {
-        completion: completeResp,
-      },
-    });
+    // await client.span.updateLlmCall({
+    //   spanId: llmCall.id,
+    //   endTime: new Date(),
+    //   attributes: {
+    //     completion: completeResp,
+    //   },
+    // });
 
-    await client.trace.update({
-      id: trace.id,
-      status: TraceStatus.Success,
-    })
+    // await client.trace.update({
+    //   id: trace.id,
+    //   status: TraceStatus.Success,
+    // })
 
     res.status(200).json({
       response: completeResp,
-      traceId: trace.id
+      // traceId: trace.id
     });
   } catch (error) {
     console.error(error);
