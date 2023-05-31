@@ -13,7 +13,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
     // const client = new LangfuseClient({
-    //   environment: 'http://localhost:3030'
+    //   environment: 'http://localhost:3000',
+    //   username: 'pk-lf-...d0b',
+    //   password: 'sk-lf-...2f3'
     // });
 
     // const trace = await client.trace.create({

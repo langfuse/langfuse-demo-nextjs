@@ -25,7 +25,7 @@ import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
-// import { LangfuseClient } from '@finto-fern/api-client';
+// import { LangfuseClient } from '@finto-fern/react-client';
 
 export interface Props {
   message: Message;
@@ -39,6 +39,7 @@ export const ChatMessage: FC<Props> = memo(
 
     // const client = new LangfuseClient({
     //   environment: 'http://localhost:3030',
+    //   token: 'pk-lf-...d0b'
     // });
 
     // function ratePositive() {
