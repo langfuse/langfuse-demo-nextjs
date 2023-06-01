@@ -4,9 +4,10 @@ import { DEFAULT_SYSTEM_PROMPT, DEFAULT_TEMPERATURE } from '@/utils/app/const';
 import { OpenAIError, OpenAIStream } from '@/utils/server';
 
 import { ChatBody } from '@/types/chat';
+// import { LangfuseClient } from '@finto-fern/langfuse-node';
+// import { TraceStatus } from '@finto-fern/langfuse-node/api';
 
-// import { LangfuseClient } from '@finto-fern/api-client';
-// import { TraceStatus } from '@finto-fern/api-client/api';
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

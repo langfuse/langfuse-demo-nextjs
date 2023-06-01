@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@dqbd/tiktoken": "^1.0.7",
-    "@finto-fern/api-client": "^0.0.154",
-    "@finto-fern/react-client": "^0.0.149",
+    "@finto-fern/langfuse-node": "^0.0.190",
+    "@finto-fern/react-client": "^0.0.192",
     "@tabler/icons-react": "^2.20.0",
     "eventsource-parser": "^1.0.0",
     "i18next": "^22.5.0",
@@ -43,7 +43,7 @@
     "@types/react-dom": "18.2.4",
     "@types/react-syntax-highlighter": "^15.5.7",
     "@types/uuid": "^9.0.1",
-    "@vitest/coverage-c8": "^0.31.2",
+    "@vitest/coverage-c8": "^0.31.4",
     "autoprefixer": "^10.4.14",
     "endent": "^2.1.0",
     "eslint": "8.41.0",
@@ -55,6 +55,6 @@
     "prettier-plugin-tailwindcss": "^0.3.0",
     "tailwindcss": "^3.3.2",
     "typescript": "5.0.4",
-    "vitest": "^0.31.2"
+    "vitest": "^0.31.4"
   }
 }
