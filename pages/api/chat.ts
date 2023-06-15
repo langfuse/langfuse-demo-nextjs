@@ -5,8 +5,8 @@ import { OpenAIError } from '@/utils/server';
 
 import { ChatBody } from '@/types/chat';
 import { Configuration, OpenAIApi } from 'openai';
-import { LangfuseClient } from '@finto-fern/langfuse-node';
-import { TraceStatus } from '@finto-fern/langfuse-node/api';
+// import { LangfuseClient } from '@finto-fern/langfuse-node';
+// import { TraceStatus } from '@finto-fern/langfuse-node/api';
 import { isAxiosError } from 'axios';
 
 
@@ -15,17 +15,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
-    const client = new LangfuseClient({
-      environment: 'http://localhost:3000',
-      username: 'pk-lf-a6a99ca5-b0e1-4616-b9ac-44732363b797',
-      password: 'sk-lf-3123a007-4891-4524-aeda-a4a02dc661bb'
-    });
+    // const client = new LangfuseClient({
+    // environment: 'http://localhost:3000',
+    //   username: 'pk-lf-...d0b',
+    //   password: 'sk-lf-...2f3'
+    // });
 
-    const trace = await client.trace.create({
-      name: 'chat-completion',
-      attributes: { env: 'http://localhost:3030' },
-      status: TraceStatus.Executing
-    })
+    // const trace = await client.trace.create({
+    //   name: 'chat-completion',
+    //   attributes: { env: 'http://localhost:3030' },
+    //   status: TraceStatus.Executing
+    // })
 
     let systemPrompt = prompt;
     if (!systemPrompt) {
@@ -43,25 +43,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         content: message.content,
       };
     });
-    console.log(model.id, model.name)
-    const llmCall = await client.span.createLlmCall({
-      traceId: trace.id,
-      startTime: new Date(),
-      name: 'chat-completion',
-      attributes: {
-        model: model.id,
-        temperature: temperatureToUse,
-        maxTokens: 2000,
-        topP: undefined,
-        prompt: JSON.stringify([
-          {
-            role: 'system',
-            content: systemPrompt,
-          },
-          ...messagesToSend,
-        ],),
-      },
-    })
+
+    // const llmCall = await client.span.createLlmCall({
+    //   traceId: trace.id,
+    //   startTime: new Date(),
+    //   name: 'chat-completion',
+    //   attributes: {
+    //     model: model.id,
+    //     temperature: temperatureToUse,
+    //     maxTokens: 2000,
+    //     topP: undefined,
+    //     prompt: JSON.stringify([
+    //       {
+    //         role: 'system',
+    //         content: systemPrompt,
+    //       },
+    //       ...messagesToSend,
+    //     ],),
+    //   },
+    // })
 
     const configuration = new Configuration({
       apiKey: key,
@@ -81,33 +81,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       temperature: temperature,
       stream: false,
     })
-    console.log('chatCompletion: ', chatCompletion.data, {
-      spanId: llmCall.id,
-      endTime: new Date(),
-      attributes: {
-        completion: chatCompletion.data.choices[0].message?.content,
-        tokens: {
-          promptAmount: chatCompletion.data.usage?.prompt_tokens,
-          completionAmount: chatCompletion.data.usage?.completion_tokens,
-        }
-      },
-    });
-    await client.span.updateLlmCall({
-      spanId: llmCall.id,
-      endTime: new Date(),
-      attributes: {
-        completion: chatCompletion.data.choices[0].message?.content,
-        tokens: {
-          promptAmount: chatCompletion.data.usage?.prompt_tokens,
-          completionAmount: chatCompletion.data.usage?.completion_tokens,
-        }
-      },
-    });
+    
+    // await client.span.updateLlmCall({
+    //   spanId: llmCall.id,
+    //   endTime: new Date(),
+    //   attributes: {
+    //     completion: chatCompletion.data.choices[0].message?.content,
+    //     tokens: {
+    //       promptAmount: chatCompletion.data.usage?.prompt_tokens,
+    //       completionAmount: chatCompletion.data.usage?.completion_tokens,
+    //     }
+    //   },
+    // });
 
-    await client.trace.update({
-      id: trace.id,
-      status: TraceStatus.Success,
-    })
+    // await client.trace.update({
+    //   id: trace.id,
+    //   status: TraceStatus.Success,
+    // })
 
     res.status(200).json({
       response: chatCompletion.data.choices[0].message?.content,
