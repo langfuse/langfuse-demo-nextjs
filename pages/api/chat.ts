@@ -10,15 +10,14 @@ import { Configuration, OpenAIApi } from 'openai';
 import { isAxiosError } from 'axios';
 
 
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
     // const client = new LangfuseClient({
     //   environment: 'http://localhost:3000',
-    //   username: 'pk-lf-...d0b',
-    //   password: 'sk-lf-...2f3'
+    //   username: process.env.PUBLISHABLE_KEY!, // 'pk-lf-...43d',
+    //   password: process.env.SECRET_KEY!, //'sk-lf-...959'
     // });
 
     // const trace = await client.trace.create({
@@ -53,13 +52,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //     temperature: temperatureToUse,
     //     maxTokens: 2000,
     //     topP: undefined,
-    //     prompt: JSON.stringify([
+    //     prompt: [
     //       {
     //         role: 'system',
     //         content: systemPrompt,
     //       },
     //       ...messagesToSend,
-    //     ],),
+    //     ],
     //   },
     // })
 

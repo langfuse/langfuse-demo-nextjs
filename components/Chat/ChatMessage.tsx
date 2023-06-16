@@ -38,25 +38,25 @@ export const ChatMessage: FC<Props> = memo(
     const { t } = useTranslation('chat');
 
     // const client = new LangfuseClient({
-    //   environment: 'http://localhost:3030',
-    //   token: 'pk-lf-...d0b'
+    //   environment: 'https://cloud.langfuse.com',
+    //   token: process.env.PUBLISHABLE_KEY!, // 'pk-lf-...43d',
     // });
 
-    // function ratePositive() {
-    //   client.score.create({
-    //     traceId: message.traceId,
-    //     name: 'user-feedback',
-    //     value: 1,
-    //   });
-    // }
+    function ratePositive() {
+      // client.score.create({
+      //   traceId: message.traceId,
+      //   name: 'user-feedback',
+      //   value: 1,
+      // });
+    }
 
-    // function rateNegative() {
-    //   client.score.create({
-    //     traceId: message.traceId,
-    //     name: 'user-feedback',
-    //     value: 0,
-    //   });
-    // }
+    function rateNegative() {
+      // client.score.create({
+      //   traceId: message.traceId,
+      //   name: 'user-feedback',
+      //   value: 0,
+      // });
+    }
 
     const {
       state: {
