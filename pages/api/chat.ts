@@ -5,7 +5,7 @@ import { OpenAIError } from '@/utils/server';
 
 import { ChatBody } from '@/types/chat';
 import { Configuration, OpenAIApi } from 'openai';
-// import { LangfuseClient } from '@finto-fern/langfuse-node';
+import { LangfuseClient } from '@finto-fern/langfuse-node';
 import { isAxiosError } from 'axios';
 
 
@@ -13,11 +13,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
-    // const client = new LangfuseClient({
-    //   environment: 'http://localhost:3000',
-    //   username: process.env.PUBLISHABLE_KEY!, // 'pk-lf-...43d',
-    //   password: process.env.SECRET_KEY!, //'sk-lf-...959'
-    // });
+    const client = new LangfuseClient({
+      environment: 'http://localhost:3000',
+      username: process.env.PUBLISHABLE_KEY!, // 'pk-lf-...43d',
+      password: process.env.SECRET_KEY!, //'sk-lf-...959'
+    });
 
     // const trace = await client.trace.create({
     //   name: 'chat-completion',
@@ -42,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     // const llmCall = await client.span.createLlmCall({
-    //   traceId: trace.id, //optional
+    //   // traceId: trace.id, //optional
     //   startTime: new Date(),
     //   name: 'chat-completion',
     //   attributes: {
