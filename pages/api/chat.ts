@@ -6,7 +6,6 @@ import { OpenAIError } from '@/utils/server';
 import { ChatBody } from '@/types/chat';
 import { Configuration, OpenAIApi } from 'openai';
 // import { LangfuseClient } from '@finto-fern/langfuse-node';
-// import { TraceStatus } from '@finto-fern/langfuse-node/api';
 import { isAxiosError } from 'axios';
 
 
@@ -23,7 +22,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     // const trace = await client.trace.create({
     //   name: 'chat-completion',
     //   attributes: { env: 'http://localhost:3030' },
-    //   status: TraceStatus.Executing
     // })
 
     let systemPrompt = prompt;
@@ -44,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     // const llmCall = await client.span.createLlmCall({
-    //   traceId: trace.id,
+    //   traceId: trace.id, //optional
     //   startTime: new Date(),
     //   name: 'chat-completion',
     //   attributes: {
@@ -92,11 +90,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //     }
     //   },
     // });
-
-    // await client.trace.update({
-    //   id: trace.id,
-    //   status: TraceStatus.Success,
-    // })
 
     res.status(200).json({
       response: chatCompletion.data.choices[0].message?.content,
