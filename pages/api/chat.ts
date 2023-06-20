@@ -5,7 +5,7 @@ import { OpenAIError } from '@/utils/server';
 
 import { ChatBody } from '@/types/chat';
 import { Configuration, OpenAIApi } from 'openai';
-// import { LangfuseClient } from '@finto-fern/langfuse-node';
+import { LangfuseClient } from '@finto-fern/langfuse-node';
 import { isAxiosError } from 'axios';
 
 
@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // const trace = await client.trace.create({
     //   name: 'chat-completion',
-    //   attributes: { env: 'http://localhost:3030' },
+    //   metadata: { env: 'http://localhost:3030' },
     // })
 
     let systemPrompt = prompt;
@@ -46,7 +46,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     const openai = new OpenAIApi(configuration);
 
-    // const startTime = new Date();
+    const startTime = new Date();
     
     const chatCompletion = await openai.createChatCompletion({
       model: model.id,
@@ -62,29 +62,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       stream: false,
     })
 
-    // const span = await client.span.createLlmCall({
+    // const span = await client.generations.log({
     //   // traceId: trace.id, //optional
     //   startTime: startTime,
     //   endTime: new Date(),
     //   name: 'chat-completion',
-    //   attributes: {
-    //     model: model.id,
+    //   model: model.id,
+    //   modelParameters: { // dict <string, string | number | boolean ] undefined>
     //     temperature: temperatureToUse,
     //     maxTokens: 2000,
     //     topP: undefined,
-    //     prompt: [
-    //       {
-    //         role: 'system',
-    //         content: systemPrompt,
-    //       },
-    //       ...messagesToSend,
-    //     ],
-    //     completion: chatCompletion.data.choices[0].message?.content,
-    //     tokens: {
-    //       promptAmount: chatCompletion.data.usage?.prompt_tokens,
-    //       completionAmount: chatCompletion.data.usage?.completion_tokens,
-    //     }
     //   },
+    //   prompt: [
+    //     {
+    //       role: 'system',
+    //       content: systemPrompt,
+    //     },
+    //     ...messagesToSend,
+    //   ],
+    //   completion: chatCompletion.data.choices[0].message?.content,
+    //   usage: { // all nullable string, integer
+    //     promptTokens: chatCompletion.data.usage?.prompt_tokens,
+    //     completionTokens: chatCompletion.data.usage?.completion_tokens,
+    //     // totalTokens: chatCompletion.data.usage?.total_tokens,
+    //   },
+    //   metadata: { // unknown, valuides JSON
+    //     userId: "user__935d7d1d-8625-4ef4-8651-544613e7bd22"
+    //   }
     // })
 
     res.status(200).json({
