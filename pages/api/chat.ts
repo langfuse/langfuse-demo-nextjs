@@ -79,7 +79,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 
     // const generation = await client.generations.log({
-    //   // traceId: trace.id, <-- this is only required when nesting with userObservation
+    //   // traceId: trace.id, //<-- this is only required when nesting with userObservation
     //   startTime: startTime,
     //   endTime: new Date(),
     //   name: 'chat-completion',
@@ -104,7 +104,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //   metadata: {
     //     userId: "user__935d7d1d-8625-4ef4-8651-544613e7bd22"
     //   },
-    //   // parentObservationId: userObservation.id <-- this is only required when nesting with userObservation
     // })
 
     res.status(200).json({
