@@ -5,7 +5,7 @@ import { OpenAIError } from '@/utils/server';
 
 import { ChatBody } from '@/types/chat';
 import { Configuration, OpenAIApi } from 'openai';
-import { LangfuseClient } from '@finto-fern/langfuse-node';
+// import { LangfuseClient } from '@finto-fern/langfuse-node';
 import { isAxiosError } from 'axios';
 
 
