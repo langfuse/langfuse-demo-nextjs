@@ -36,6 +36,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       };
     });
 
+    // const trace = await client.trace.create({
+    //   name: 'chat',
+    //   metadata: {
+    //     userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22',
+    //   },
+    // });
+    
+    const startTimeUserSearch = new Date();
+
+    //const dbUser = await client.users.get({ username: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22' });
+
+    // const userObservation = await client.span.create({
+    //   startTime: startTimeUserSearch,
+    //   endTime: new Date(),
+    //   name: 'user-search',
+    //   metadata: {
+    //     userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22',
+    //   },
+    //   traceId: trace.id
+    // });
+
     const configuration = new Configuration({
       apiKey: key,
     });
@@ -58,11 +79,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 
     // const generation = await client.generations.log({
+    //   // traceId: trace.id, <-- this is only required when nesting with userObservation
     //   startTime: startTime,
     //   endTime: new Date(),
     //   name: 'chat-completion',
     //   model: model.id,
-    //   modelParameters: { // dict <string, string | number | boolean ] undefined>
+    //   modelParameters: {
     //     temperature: temperatureToUse,
     //     maxTokens: 2000,
     //     topP: undefined,
@@ -75,14 +97,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //     ...messagesToSend,
     //   ],
     //   completion: chatCompletion.data.choices[0].message?.content,
-    //   usage: { // all nullable string, integer
+    //   usage: {
     //     promptTokens: chatCompletion.data.usage?.prompt_tokens,
     //     completionTokens: chatCompletion.data.usage?.completion_tokens,
-    //     // totalTokens: chatCompletion.data.usage?.total_tokens,
     //   },
-    //   metadata: { // unknown, valuides JSON
+    //   metadata: {
     //     userId: "user__935d7d1d-8625-4ef4-8651-544613e7bd22"
-    //   }
+    //   },
+    //   // parentObservationId: userObservation.id <-- this is only required when nesting with userObservation
     // })
 
     res.status(200).json({
