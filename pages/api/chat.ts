@@ -5,7 +5,7 @@ import { OpenAIError } from '@/utils/server';
 
 import { ChatBody } from '@/types/chat';
 import { Configuration, OpenAIApi } from 'openai';
-import { LangfuseClient } from '@finto-fern/langfuse-node';
+// import { LangfuseClient } from '@finto-fern/langfuse-node';
 import { isAxiosError } from 'axios';
 
 
@@ -13,11 +13,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
-    const client = new LangfuseClient({
-      environment: 'http://localhost:3000',
-      username: process.env.PUBLISHABLE_KEY!, // 'pk-lf-...43d',
-      password: process.env.SECRET_KEY!, //'sk-lf-...959'
-    });
+    // const client = new LangfuseClient({
+    //   environment: 'http://localhost:3000',
+    //   username: process.env.NEXT_PUBLIC_PUBLISHABLE_KEY!, // 'pk-lf-...43d',
+    //   password: process.env.SECRET_KEY!, //'sk-lf-...959'
+    // });
 
     // const trace = await client.trace.create({
     //   name: 'chat-completion',
@@ -41,29 +41,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       };
     });
 
-    // const llmCall = await client.span.createLlmCall({
-    //   // traceId: trace.id, //optional
-    //   startTime: new Date(),
-    //   name: 'chat-completion',
-    //   attributes: {
-    //     model: model.id,
-    //     temperature: temperatureToUse,
-    //     maxTokens: 2000,
-    //     topP: undefined,
-    //     prompt: [
-    //       {
-    //         role: 'system',
-    //         content: systemPrompt,
-    //       },
-    //       ...messagesToSend,
-    //     ],
-    //   },
-    // })
-
     const configuration = new Configuration({
       apiKey: key,
     });
     const openai = new OpenAIApi(configuration);
+
+    // const startTime = new Date();
     
     const chatCompletion = await openai.createChatCompletion({
       model: model.id,
@@ -78,22 +61,35 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       temperature: temperature,
       stream: false,
     })
-    
-    // await client.span.updateLlmCall({
-    //   spanId: llmCall.id,
+
+    // const span = await client.span.createLlmCall({
+    //   // traceId: trace.id, //optional
+    //   startTime: startTime,
     //   endTime: new Date(),
+    //   name: 'chat-completion',
     //   attributes: {
+    //     model: model.id,
+    //     temperature: temperatureToUse,
+    //     maxTokens: 2000,
+    //     topP: undefined,
+    //     prompt: [
+    //       {
+    //         role: 'system',
+    //         content: systemPrompt,
+    //       },
+    //       ...messagesToSend,
+    //     ],
     //     completion: chatCompletion.data.choices[0].message?.content,
     //     tokens: {
     //       promptAmount: chatCompletion.data.usage?.prompt_tokens,
     //       completionAmount: chatCompletion.data.usage?.completion_tokens,
     //     }
     //   },
-    // });
+    // })
 
     res.status(200).json({
       response: chatCompletion.data.choices[0].message?.content,
-      // traceId: trace.id
+      // traceId: span.traceId
     });
   } catch (error) {
 

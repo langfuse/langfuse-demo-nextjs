@@ -38,23 +38,15 @@ export const ChatMessage: FC<Props> = memo(
     const { t } = useTranslation('chat');
 
     // const client = new LangfuseClient({
-    //   environment: 'https://cloud.langfuse.com',
-    //   token: process.env.PUBLISHABLE_KEY!, // 'pk-lf-...43d',
+    //   environment: 'http://localhost:3000',
+    //   token: process.env.NEXT_PUBLIC_PUBLISHABLE_KEY!, // 'pk-lf-...43d',
     // });
 
-    function ratePositive() {
+    function rate(score: number) {
       // client.score.create({
       //   traceId: message.traceId,
       //   name: 'user-feedback',
-      //   value: 1,
-      // });
-    }
-
-    function rateNegative() {
-      // client.score.create({
-      //   traceId: message.traceId,
-      //   name: 'user-feedback',
-      //   value: 0,
+      //   value: score,
       // });
     }
 
@@ -329,7 +321,7 @@ export const ChatMessage: FC<Props> = memo(
                     {/* <div className="flex-none">
                       <button
                         className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                        onClick={ratePositive}
+                        onClick={() => rate(1)}
                       >
                         <IconThumbUp size={20} />
                       </button>
@@ -337,7 +329,7 @@ export const ChatMessage: FC<Props> = memo(
                     <div className="flex-none">
                       <button
                         className="invisible group-hover:visible focus:visible text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-                        onClick={rateNegative}
+                        onClick={() => rate(0)}
                       >
                         <IconThumbDown size={20} />
                       </button>
