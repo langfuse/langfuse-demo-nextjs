@@ -14,15 +14,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
     // const client = new LangfuseClient({
-    //   environment: 'http://localhost:3000',
+    //   environment: 'https://cloud.langfuse.com',
     //   username: process.env.NEXT_PUBLIC_PUBLISHABLE_KEY!, // 'pk-lf-...43d',
     //   password: process.env.SECRET_KEY!, //'sk-lf-...959'
     // });
-
-    // const trace = await client.trace.create({
-    //   name: 'chat-completion',
-    //   metadata: { env: 'http://localhost:3030' },
-    // })
 
     let systemPrompt = prompt;
     if (!systemPrompt) {
@@ -62,8 +57,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       stream: false,
     })
 
-    // const span = await client.generations.log({
-    //   // traceId: trace.id, //optional
+    // const generation = await client.generations.log({
     //   startTime: startTime,
     //   endTime: new Date(),
     //   name: 'chat-completion',
@@ -93,7 +87,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json({
       response: chatCompletion.data.choices[0].message?.content,
-      // traceId: span.traceId
+      // traceId: generation.traceId
     });
   } catch (error) {
 
