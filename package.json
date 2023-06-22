@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@dqbd/tiktoken": "^1.0.7",
-    "@finto-fern/langfuse-node": "^0.0.331",
-    "@finto-fern/react-client": "^0.0.333",
+    "@finto-fern/langfuse-node": "^0.0.347",
+    "@finto-fern/react-client": "^0.0.350",
     "@tabler/icons-react": "^2.22.0",
     "axios": "^1.4.0",
     "eventsource-parser": "^1.0.0",
