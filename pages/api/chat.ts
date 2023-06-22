@@ -51,6 +51,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //   startTime: startTimeUserSearch,
     //   endTime: new Date(),
     //   name: 'user-search',
+    //   input: { 
+    //     username: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22'
+    //   },
+    //   output: {
+    //     firstName: 'Max', // dbUser.firstName
+    //     lastName: 'Mustermann', // dbUser.lastName
+    //     email: 'max.mustermann@gmail.com' // dbUser.email
+    //   },
     //   metadata: {
     //     userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22',
     //   },
