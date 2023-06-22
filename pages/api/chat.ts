@@ -52,7 +52,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //   endTime: new Date(),
     //   name: 'user-search',
     //   input: { 
-    //     username: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22'
+    //     userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22'
     //   },
     //   output: {
     //     firstName: 'Max', // dbUser.firstName
