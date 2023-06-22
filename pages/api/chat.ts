@@ -5,7 +5,7 @@ import { OpenAIError } from '@/utils/server';
 
 import { ChatBody } from '@/types/chat';
 import { Configuration, OpenAIApi } from 'openai';
-import { LangfuseClient } from '@finto-fern/langfuse-node';
+// import { LangfuseClient } from '@finto-fern/langfuse-node';
 import { isAxiosError } from 'axios';
 
 
@@ -13,11 +13,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { model, messages, key, prompt, temperature } = req.body as ChatBody;
 
-    const client = new LangfuseClient({
-      environment: 'http://localhost:3000',
-      username: process.env.NEXT_PUBLIC_PUBLISHABLE_KEY!, // 'pk-lf-...43d',
-      password: process.env.SECRET_KEY!, //'sk-lf-...959'
-    });
+    // const client = new LangfuseClient({
+    //   environment: 'http://localhost:3000',
+    //   username: process.env.NEXT_PUBLIC_PUBLISHABLE_KEY!, // 'pk-lf-...43d',
+    //   password: process.env.SECRET_KEY!, //'sk-lf-...959'
+    // });
 
     let systemPrompt = prompt;
     if (!systemPrompt) {
@@ -36,34 +36,34 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       };
     });
 
-    const trace = await client.trace.create({
-      name: 'chat',
-      metadata: {
-        userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22',
-      },
-    });
+    // const trace = await client.trace.create({
+    //   name: 'chat',
+    //   metadata: {
+    //     userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22',
+    //   },
+    // });
     
     const startTimeUserSearch = new Date();
 
     //const dbUser = await client.users.get({ username: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22' });
 
-    const userObservation = await client.span.create({
-      startTime: startTimeUserSearch,
-      endTime: new Date(),
-      name: 'user-search',
-      input: { 
-        username: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22'
-      },
-      // output: {
-      //   firstName: 'Max', // dbUser.firstName
-      //   lastName: 'Mustermann', // dbUser.lastName
-      //   email: 'max.mustermann@gmail.com' // dbUser.email
-      // },
-      metadata: {
-        userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22',
-      },
-      traceId: trace.id
-    });
+    // const userObservation = await client.span.create({
+    //   startTime: startTimeUserSearch,
+    //   endTime: new Date(),
+    //   name: 'user-search',
+    //   input: { 
+    //     username: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22'
+    //   },
+    //   output: {
+    //     firstName: 'Max', // dbUser.firstName
+    //     lastName: 'Mustermann', // dbUser.lastName
+    //     email: 'max.mustermann@gmail.com' // dbUser.email
+    //   },
+    //   metadata: {
+    //     userId: 'user__935d7d1d-8625-4ef4-8651-544613e7bd22',
+    //   },
+    //   traceId: trace.id
+    // });
 
     const configuration = new Configuration({
       apiKey: key,
